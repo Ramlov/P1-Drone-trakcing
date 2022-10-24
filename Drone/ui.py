@@ -263,3 +263,4 @@ class TelloUI(object):
         self.stopEvent.set()
         del self.tello
         self.root.quit()
+
