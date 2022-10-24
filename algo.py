@@ -2,7 +2,7 @@ import numpy as np
 
 
 def test(n):
-    l =  np.random.rand(n)
+    l =  np.random.rand()
     return l
 
 
@@ -10,11 +10,11 @@ def x_y(nb):
     x_pos = []
     y_pos = []
     for n in range(nb):
-        y = 2*n+1
+        y = 1+np.random.rand()
         x_pos.append(n)
         y_pos.append(y)
 
-    return x_pos, y_pos
+    return y_pos, y_pos
         
 
 
