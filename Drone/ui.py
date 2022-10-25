@@ -7,25 +7,12 @@ import time
 import platform
 
 class TelloUI(object):
-    """
-    Wrapper class to enable the GUI.
-    """
     def __init__(self, tello):
-        """
-        Initializes all the element of the GUI, supported by Tkinter
-
-        :param tello: class interacts with the Tello drone.
-        """
-        self.tello = tello # videostream device
-        self.thread = None # thread of the Tkinter mainloop
+        self.tello = tello
+        self.thread = None
         self.stopEvent = None  
-        
-        # control variables
-        self.distance = 0.1  # default distance for 'move' cmd
-        self.degree = 30  # default degree for 'cw' or 'ccw' cmd
-
-        # if the flag is TRUE,the auto-takeoff thread will stop waiting
-        # for the response from tello
+        self.distance = 0.2
+        self.degree = 30
         self.quit_waiting_flag = False
         
         # initialize the root window and image panel
@@ -50,30 +37,14 @@ class TelloUI(object):
         self.sending_command_thread = threading.Thread(target = self._sendingCommand)
             
     def _sendingCommand(self):
-        """
-        Starts a while loop that sends 'command' to tello every 5 second.
-
-        :return: None
-        """    
-
         while True:
             self.tello.send_command('command')        
             time.sleep(5)
 
-    def _setQuitWaitingFlag(self):  
-        """
-        Set the variable as TRUE; it will stop computer waiting for response from tello.
-
-        :return: None
-        """       
+    def _setQuitWaitingFlag(self):      
         self.quit_waiting_flag = True        
    
-    def openCmdWindow(self):
-        """
-        Open the cmd window and initial all the button and text.
-
-        :return: None
-        """        
+    def openCmdWindow(self):   
         panel = Toplevel(self.root)
         panel.wm_title('Command Panel')
 

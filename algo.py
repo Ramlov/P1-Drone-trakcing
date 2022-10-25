@@ -74,7 +74,9 @@ class graph():
         #print(new_xpos, new_ypos)
         for l in range(B):
             test = []
-            test.append(self.ypos+random.random())
+            scnd = random.random()
+            yikes = self.ypos+scnd
+            test.append(yikes)
         
         for k in range(N):
             test1 = []
