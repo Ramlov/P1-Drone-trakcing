@@ -4,67 +4,97 @@ import math
 import matplotlib.pyplot as plt
 import random
 
-'''
-def algo(nb):
-    xpos = []
-    ypos = []
-    for n in range(nb):
-        y = math.sin(1) + 0.5*n
-        if y < 0:
-            y = -1*y
-        xpos.append(n)
-        ypos.append(y)
-    
-    print(xpos, "\n\n", ypos)
-    plt.plot(xpos, ypos)
-    plt.show()
-'''
 
-def movement(xs, ys, vx, vy, t_end):
-    #Define Lists
-    xpos = []
-    ypos = []
-    change = []
-    for i in range(4):
-        change.append((t_end/4)*i)
+class graph():
+    def __init__(self):
+        xpos = []
+        ypos = []
+        self.xpos = xpos
+        self.ypos = ypos
 
 
-    
-    #X and y Acceleration and velocity
-    ax = 0
-    ay = 0
+    def movement(self, xs, ys, vx, vy, t_end):
+        #Define Lists
+        change = []
+        for i in range(4):
+            change.append((t_end/4)*i)
 
-    for t in range(t_end):
-        #Calculate X Velocity
-        vx = vx + (ax)
-        if vx > 8: #Speed Threshold for X
-            vx = 8
-        else:
-            if vx < -8:
-                vx = -8
 
-        #Calculate Y Velocity
-        vy = vy + (ay)
-        if vy > 8: #Speed Threshold for Y
-            vy = 8
-        else:
-            if vy < -8:
-                vy = -8
+        
+        #X and y Acceleration and velocity
+        ax = 0
+        ay = 0
 
-        #Calculate new position for x and y placement
-        xs = xs + vx
-        ys = ys + vy
-        #Append Location
-        xpos.append(xs)
-        ypos.append(ys)
+        for t in range(t_end):
+            #Calculate X Velocity
+            vx = vx + (ax)
+            if vx > 8: #Speed Threshold for X
+                vx = 8
+            else:
+                if vx < -8:
+                    vx = -8
 
-        if t in change:
-            print("change acc", t)
-            ax = (random.randrange(-15, 15, 1) / 10)
-            ay = (random.randrange(-15, 15, 1) / 10)
-            print(ax, ay)
+            #Calculate Y Velocity
+            vy = vy + (ay)
+            if vy > 8: #Speed Threshold for Y
+                vy = 8
+            else:
+                if vy < -8:
+                    vy = -8
 
-    plt.plot(xpos, ypos)
-    plt.show()
+            #Calculate new position for x and y placement
+            xs = xs + vx
+            ys = ys + vy
+            #Append Location
+            self.xpos.append(xs)
+            self.ypos.append(ys)
 
-movement(0, 0, 0, 0, 100)
+            if t in change:
+                print("change acc", t)
+                ax = (random.randrange(-15, 15, 1) / 10)
+                ay = (random.randrange(-15, 15, 1) / 10)
+                print(ax, ay)
+        #plt.plot(self.xpos, self.ypos)
+        #plt.show()
+
+    def show_graph(self):
+        '''Generate Graph'''
+        #plt.show()
+
+    def noise(self):
+        '''Generate Noise'''
+        random.seed(42)
+        N = len(self.xpos)
+        rang = range(N)
+        new_xpos = [random.random() for i in rang]
+
+        B = len(self.ypos)
+        rangg = range(B)
+        new_ypos = [random.random() for I in rangg]
+        #print(new_xpos, new_ypos)
+        for l in range(B):
+            test = []
+            scnd = random.random()
+            yikes = self.ypos+scnd
+            test.append(yikes)
+        
+        for k in range(N):
+            test1 = []
+            test1.append(self.xpos+random.random())
+
+
+        fig = plt.figure()
+        fig, ax = plt.subplots()
+        ax.plot(self.xpos, self.ypos, label='Movement')
+        ax.plot(test, test1, 'r+', label='Noise')
+        ax.set_title("My Plot")
+        ax.legend()
+        #plt.plot(new_xpos, new_ypos, 'r+')
+        #plt.plot(self.xpos, self.ypos)
+        plt.show()
+
+graf = graph()
+
+graf.movement(0, 0, 0, 0, 100)
+graf.noise()
+#plt.show()
