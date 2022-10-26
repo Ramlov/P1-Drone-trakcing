@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import PySimpleGUI as sg
 matplotlib.use("TkAgg")
-
+Debug = True
 
 class graph():
     def __init__(self):
@@ -58,10 +58,12 @@ class graph():
             self.ypos.append(ys)
 
             if t in change:
-                print("change acc", t)
+                
                 ax = (random.randrange(-15, 15, 1) / 10)
                 ay = (random.randrange(-15, 15, 1) / 10)
-                print(ax, ay)
+                if Debug == True:
+                    print("change acc", t)
+                    print(ax, ay)
         #plt.plot(self.xpos, self.ypos)
 
     def show_graph(self):
@@ -79,12 +81,21 @@ class graph():
             
             for k in range(len(self.ypos)):
                 test1.append(self.ypos[k-1]+(random.random()*spread)) #Random seed
+        for m in range(howmuch):
+            for l in range(len(self.xpos)):
+                test.append((self.xpos[l-1]+(random.random()*spread)*-1)) # Random seed
+            
+            for k in range(len(self.ypos)):
+                test1.append((self.ypos[k-1]+(random.random()*spread)*-1)) #Random seed
+        
         
         fig, ax = plt.subplots()
         ax.plot(self.xpos, self.ypos, label='Movement')
         ax.plot(test, test1, 'r+', label='Noise')
         ax.set_title("Drone movement + Noise")
         ax.legend()
+        if Debug == True:
+            print("Figuren er: ", fig)
         return(fig)
         #plt.show()
 
@@ -120,13 +131,16 @@ fig_gui = None
 
 
 while True:
-    print(fig_gui)
+    if Debug == True:
+        print(fig_gui)
     event, values = window.read()
     if event == None or event == 'Exit':
         break
     if event == '-MAKE-':
         if fig_gui != None:
             delete_fig(fig_gui)
+            if Debug == True:
+                print(fig_gui)
         graf.reset()
         graf.movement(0, 0, 0, 0, 100)
         fig = graf.noise(int(values['-SPREAD-']), int(values['-HOWMUCH-']))
