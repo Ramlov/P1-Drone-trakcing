@@ -1,4 +1,5 @@
 from random import random
+from re import X
 import numpy as np
 import math
 import random
@@ -7,14 +8,22 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import PySimpleGUI as sg
 matplotlib.use("TkAgg")
-Debug = True
+
+
+Debug = False
+
+dronelistx = []
+dronelisty = []
+
 
 class graph():
+    #t_end = 100
     def __init__(self):
         xpos = []
         ypos = []
         self.xpos = xpos
         self.ypos = ypos
+        #self.t_end = t_end
 
     def reset(self):
         xpos = []
@@ -24,16 +33,21 @@ class graph():
 
     def movement(self, xs, ys, vx, vy, t_end):
         #Define Lists
+        #xpos = []
+        #ypos = []
+
+        #How many times to change direction (4 cap)
         change = []
-        for i in range(4):
-            change.append((t_end/4)*i)
-
-
+        rand = random.choice([2,4])
+        print(rand)
+        for i in range(rand):
+            change.append((t_end/rand)*i)
+        
         #X and y Acceleration and velocity
         ax = 0
         ay = 0
 
-        for t in range(t_end):
+        for t in range(t_end): #Generate Values based on the iterations of radar readings
             #Calculate X Velocity
             vx = vx + (ax)
             if vx > 8: #Speed Threshold for X
@@ -53,22 +67,18 @@ class graph():
             #Calculate new position for x and y placement
             xs = xs + vx
             ys = ys + vy
+        
             #Append Location
             self.xpos.append(xs)
             self.ypos.append(ys)
 
+            #Change acceleration based on the kinetic limits of the drone.
             if t in change:
-                
+                print("change acc", t)
                 ax = (random.randrange(-15, 15, 1) / 10)
                 ay = (random.randrange(-15, 15, 1) / 10)
-                if Debug == True:
-                    print("change acc", t)
-                    print(ax, ay)
-        #plt.plot(self.xpos, self.ypos)
-
-    def show_graph(self):
-        '''Generate Graph'''
-        #plt.show()
+                print(ax, ay)
+        return self.xpos, self.ypos
 
     def noise(self, spread, howmuch):
         '''Generate Noise'''
@@ -97,6 +107,39 @@ class graph():
         if Debug == True:
             print("Figuren er: ", fig)
         return(fig)
+    
+    def animate(self, t_end):
+        #List to Array conversion
+        npxpos = np.array(self.xpos)
+        npypos = np.array(self.ypos)
+        xposnew = np.array([])
+        yposnew = np.array([])
+
+        #Update plot on call
+        plt.ion()
+
+        #Figure and Plot Creation
+        fig = plt.figure()
+        axi = fig.add_subplot(111)
+        line1, = axi.plot(npxpos, npypos)
+
+        plt.title("2 Dimensional Drone Flight", fontsize=20)
+        plt.xlabel("X-Meters")
+        plt.ylabel("Y-Meters")
+
+        for _ in range(t_end):
+            #Plot and Update Graph
+            xposnew = np.append(xposnew, self.xpos[_])
+            yposnew = np.append(yposnew, self.ypos[_])
+            line1.set_xdata(xposnew)
+            line1.set_ydata(yposnew)
+
+            fig.canvas.draw() #Draw updated values
+            fig.canvas.flush_events() #Run Gui events, loops until processing is finished
+        
+        #Turn off Autodisplay
+        plt.ioff()
+        #plt.plot(dronex, droney)
         #plt.show()
 
 graf = graph()
@@ -117,9 +160,13 @@ def delete_fig(fig): #Delete or update figure
     fig.get_tk_widget().forget()
     plt.close('all')
 
+
+
+
 sg.theme('DarkGrey4')  
 layout = [
             [sg.Button('Lav graf',  key='-MAKE-')],
+            [sg.Button('Animate',  key='-ANIMATE-')],
             [sg.Text('Hvor stor afspredelse?'), sg.Input('15', key='-SPREAD-')],
             [sg.Text('Hvor meget støj'),sg.Input('1', key='-HOWMUCH-')],
             [sg.Canvas(key = '-graph-')],
@@ -127,8 +174,8 @@ layout = [
 
 window = sg.Window('Drone Tracking Algorithm', layout, grab_anywhere=True)
 
-fig_gui = None
 
+fig_gui = None
 
 while True:
     if Debug == True:
@@ -145,3 +192,5 @@ while True:
         graf.movement(0, 0, 0, 0, 100)
         fig = graf.noise(int(values['-SPREAD-']), int(values['-HOWMUCH-']))
         fig_gui = draw_figure(window['-graph-'].TKCanvas, fig)
+    elif event == '-ANIMATE-':
+        pass
