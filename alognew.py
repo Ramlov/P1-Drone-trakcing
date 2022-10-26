@@ -89,20 +89,26 @@ class graph():
         xposnew = np.array([])
         yposnew = np.array([])
 
+        #Update plot on call
+        plt.ion()
+
         #Figure Creation
-        fig = plt.figure()
-        axi = fig.add_subplot(111)
+        #fig = plt.figure()
+
+        fig, axi = plt.subplots()
+        
+        #fig, axi = fig.add_subplot(111)
         line1, = axi.plot(npxpos, npypos)
 
         plt.title("2 Dimensional Drone Flight", fontsize=20)
         plt.xlabel("X-Meters")
         plt.ylabel("Y-Meters")
-
+        
         #Draw Figure to window
         fig_gui = draw_figure(window['-graph-'].TKCanvas, fig)
 
-        #Update plot on call
-        plt.ion()
+        
+        
 
         for _ in range(t_end):
             #Plot and Update Graph
@@ -178,7 +184,6 @@ while True:
 
         #Draw Graph
         fig_gui = graf.animate(t_end, window)
-
         if fig_gui != None:
             delete_fig(fig_gui)
 
