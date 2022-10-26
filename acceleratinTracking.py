@@ -49,8 +49,8 @@ def acceleration_track_x(alpha, beta, gamma, x_0, v_c, a, t1, t2, z):
 
 z1 = [30160, 30365, 30890, 31050, 31785, 32215, 33130, 34510, 36010, 37265]
 acceleration_track_x(0.5, 0.4, 0.1, 30000, 50, 0, 0, 5, z1)
-
-
+print()
+# fdsjfjdsf
 fig, ax = plt.subplots()
 
 ax.plot(x, label='Measured position')
