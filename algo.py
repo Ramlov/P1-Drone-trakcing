@@ -17,13 +17,13 @@ dronelisty = []
 
 
 class graph():
-    t_end = 100
+    #t_end = 100
     def __init__(self):
         xpos = []
         ypos = []
         self.xpos = xpos
         self.ypos = ypos
-        self.t_end = t_end
+        #self.t_end = t_end
 
     def reset(self):
         xpos = []
