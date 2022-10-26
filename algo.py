@@ -194,3 +194,4 @@ while True:
         fig_gui = draw_figure(window['-graph-'].TKCanvas, fig)
     elif event == '-ANIMATE-':
         pass
+
