@@ -1,5 +1,8 @@
+#Version 1.1 Noise Update
 #import libraries
 from multiprocessing.connection import wait
+from re import T
+from tkinter import Y
 import numpy as np
 import math
 from random import random
@@ -14,11 +17,16 @@ matplotlib.use("TkAgg")
 
 #Variables
 t_end = 100
+t = 0.5
 dronelistx = []
 dronelisty = []
 
 
-#Functions
+
+
+#-----------------------------------#
+            #Functions
+#-----------------------------------#
 def movement(xs, ys, vx, vy, t_end):
     #Define Lists
     xpos = []
@@ -70,31 +78,71 @@ def movement(xs, ys, vx, vy, t_end):
     return xpos, ypos
 
 
-
-def noise(xpos, ypos, spread, howmuch):
+def noise(xpos, ypos, mu, sigma):
         '''Generate Noise'''
+        #Define seed and variable
         random.seed(512)
         test = []
         test1 = []
-        for m in range(howmuch):
-            for l in range(len(xpos)):
-                test.append(xpos[l-1]+(random.random()*spread)) # Random seed
-            
-            for k in range(len(ypos)):
-                test1.append(ypos[k-1]+(random.random()*spread)) #Random seed
 
-        for m in range(howmuch):
-            for l in range(len(xpos)):
-                test.append((xpos[l-1]+(random.random()*spread)*-1)) # Random seed
-            
-            for k in range(len(ypos)):
-                test1.append((ypos[k-1]+(random.random()*spread)*-1)) #Random seed
+        #Noise Generation
+        for l in range(len(xpos)):
+            test.append(xpos[l]+(np.random.normal(mu, sigma))) # Random seed
+        
+        for k in range(len(ypos)):
+            test1.append(ypos[k]+(np.random.normal(mu, sigma))) #Random seed
 
+        print(len(test))
         return(test, test1)
 
 
+def algorithm(x_mes, y_mes, t_end, t):
+    #Estimated and Predicted Position, Velocity, and Acc Variable Creation
+    x_est = []
+    xv_est = []
+    xa_est = []
+    pre_x = x_mes[0]
+    pre_xv = 0
+    pre_xa = 0
 
-def animate(xpos, ypos, test, test1, t_end, window):
+    y_est = []
+    yv_est = []
+    ya_est = []
+    pre_y = y_mes[0]
+    pre_yv = 0
+    pre_ya = 0
+
+    #Alpha-Beta-Gamma Filter values
+    a = 0.5
+    b = 0.4
+    g = 0.1
+
+    #Calc Estimation
+    for i in range(1,t_end):
+        x_est.append(pre_x + a*(x_mes[i] - pre_x))
+        xv_est.append(pre_xv + b*((x_mes[i] - pre_x)/t))
+        xa_est.append(pre_xa + g*((x_mes[i] - pre_x)/0.5*t**2))
+        
+        pre_x = x_est[-1] + xv_est[-1]*t + 0.5*xa_est[-1]* t**2
+        pre_xv = xv_est[-1] + xa_est[-1]*t 
+        pre_xa = xa_est[-1]
+        
+        y_est.append(pre_y + a*(y_mes[i] - pre_y))
+        yv_est.append(pre_yv + b*((y_mes[i] - pre_y)/t))
+        ya_est.append(pre_ya + g*((y_mes[i] - pre_y)/0.5*t**2))
+        
+        pre_y = y_est[-1] + yv_est[-1] + 0.5*ya_est[-1]
+        pre_yv = yv_est[-1] + ya_est[-1] 
+        pre_ya = ya_est[-1]
+    
+    return(x_est, y_est)
+
+
+#-----------------------------------#
+        #Animation and Plotting
+#-----------------------------------#
+
+def animate(xpos, ypos, x_mes, y_mes, algox, algoy, t_end, window):
     #List to Array conversion
     npxpos = np.array(xpos)
     npypos = np.array(ypos)
@@ -125,16 +173,21 @@ def animate(xpos, ypos, test, test1, t_end, window):
         fig.canvas.draw() #Draw updated values
         fig.canvas.flush_events() #Run Gui events, loops until processing is finished
     
-    axi.plot(test, test1, 'r+', label='Noise')
+    #Plot noise with graph
+    axi.plot(x_mes, y_mes, 'r+', label='Noise')
     axi.set_title("Drone movement + Noise")
     fig.canvas.draw()
+
+    #Plot Alpha-Beta-Gamma estimate
+    axi.plot(algox, algoy, label='Filter')
+    axi.set_title("Drone Flight with Noise and Estimated Position")
+    fig.canvas.draw()
+
 
     #Turn off Autodisplay
     plt.ioff()
 
     return(fig_gui)
-
-
 
 
 
@@ -161,8 +214,8 @@ fig_gui = None
 sg.theme('DarkGrey4')  
 layout = [
             [sg.Button('Lav graf',  key='-MAKE-')],
-            [sg.Text('Hvor stor afspredelse?'), sg.Input('15', key='-SPREAD-')],
-            [sg.Text('Hvor meget støj'),sg.Input('1', key='-HOWMUCH-')],
+            [sg.Text('Mean (Gaussian Distribution)'), sg.Input('0', key='-MEAN-')],
+            [sg.Text('Standard Deviation'),sg.Input('10', key='-SD-')],
             [sg.Canvas(key = '-graph-')],
         ]
 
@@ -184,7 +237,10 @@ while True:
 
         dronelistx, dronelisty = movement(0, 0, 0, 0, t_end)
 
-        test, test1 = noise(dronelistx, dronelisty, int(values['-SPREAD-']), int(values['-HOWMUCH-']))
+        x_mes, y_mes = noise(dronelistx, dronelisty, int(values['-MEAN-']), int(values['-SD-']))
+
+
+        algox, algoy = algorithm(x_mes, y_mes, t_end, t)
 
         #Draw Graph
-        fig_gui = animate(dronelistx, dronelisty, test, test1, t_end, window)
+        fig_gui = animate(dronelistx, dronelisty, x_mes, y_mes, algox, algoy, t_end, window)
