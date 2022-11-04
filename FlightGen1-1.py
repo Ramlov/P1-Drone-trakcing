@@ -82,18 +82,18 @@ def noise(xpos, ypos, mu, sigma):
         '''Generate Noise'''
         #Define seed and variable
         random.seed(512)
-        test = []
-        test1 = []
+        x_list = []
+        y_list = []
 
         #Noise Generation
         for l in range(len(xpos)):
-            test.append(xpos[l]+(np.random.normal(mu, sigma))) # Random seed
+            x_list.append(xpos[l]+(np.random.normal(mu, sigma))) # Random seed
         
         for k in range(len(ypos)):
-            test1.append(ypos[k]+(np.random.normal(mu, sigma))) #Random seed
+            y_list.append(ypos[k]+(np.random.normal(mu, sigma))) #Random seed
 
-        print(len(test))
-        return(test, test1)
+        print(len(x_list))
+        return(x_list, y_list)
 
 
 def algorithm(x_mes, y_mes, t_end, t):
