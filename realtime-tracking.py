@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 x = []
-predict_x = [, ]
+predict_x = [ ]
 v = []
 predict_vel = []
 acc = []
