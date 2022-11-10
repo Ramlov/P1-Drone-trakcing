@@ -1,15 +1,10 @@
 #Version 1.1 Noise Update
 #import libraries
-from multiprocessing.connection import wait
-from re import T
-from tkinter import Y
 import numpy as np
-import math
 from random import random
 import random
 import matplotlib 
 import matplotlib.pyplot as plt
-import time
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import PySimpleGUI as sg
 
