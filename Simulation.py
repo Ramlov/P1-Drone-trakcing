@@ -151,11 +151,21 @@ def animate(xpos, ypos, x_mes, y_mes, algox, algoy, t_end, window):
 
     #Figure and Plot Creation
     fig, axi = plt.subplots()
-    line1, = axi.plot(npxpos, npypos)
+    axi.set_facecolor('#324e7b')
+    fig.set_facecolor('#324e7b')
+    axi.set_ylabel('Y-Meters', color='white')
+    axi.set_xlabel('X-Meters', color='white')
+    axi.set_title('2 Dimensional Drone Flight', fontsize=20, color='white')
 
-    plt.title("2 Dimensional Drone Flight", fontsize=20)
-    plt.xlabel("X-Meters")
-    plt.ylabel("Y-Meters")
+    for xtick in axi.get_xticklabels():         
+        xtick.set_color('white')     
+    for ytick in axi.get_yticklabels():        
+        ytick.set_color('white')
+    line1, = axi.plot(npxpos, npypos, color='white')
+
+    #plt.title("2 Dimensional Drone Flight", fontsize=20)
+    #plt.xlabel("")
+    #plt.ylabel("")
 
     #Update plot on call
     plt.ion()
@@ -174,12 +184,12 @@ def animate(xpos, ypos, x_mes, y_mes, algox, algoy, t_end, window):
         fig.canvas.flush_events() #Run Gui events, loops until processing is finished
     
     #Plot noise with graph
-    axi.plot(x_mes, y_mes, 'r+', label='Noise')
+    axi.plot(x_mes, y_mes, 'r+', label='Noise', linewidth=0.3)
     axi.set_title("Drone movement + Noise")
     fig.canvas.draw()
 
     #Plot Alpha-Beta-Gamma estimate
-    axi.plot(algox, algoy, label='Filter')
+    axi.plot(algox, algoy, label='Filter', color='green')
     axi.set_title("Drone Flight with Noise and Estimated Position")
     fig.canvas.draw()
 
