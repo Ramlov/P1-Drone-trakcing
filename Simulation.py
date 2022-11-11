@@ -78,22 +78,23 @@ def movement(xs, ys, vx, vy, t_end):
     return xpos, ypos, ax, ay
 
 
-def noise(xpos, ypos, mu, sigma):
-        '''Generate Noise'''
-        #Define seed and variable
-        random.seed(512)
-        x_list = []
-        y_list = []
+def noise(xpos, ypos, mu):
+    '''Generate Noise'''
+    #Define seed and variable
+    x_list = []
+    y_list = []
 
-        #Noise Generation
-        for l in range(len(xpos)):
-            x_list.append(xpos[l]+(np.random.normal(mu, sigma))) # Random seed
-        
-        for k in range(len(ypos)):
-            y_list.append(ypos[k]+(np.random.normal(mu, sigma))) #Random seed
+    #Noise Generation
+    for l in range(len(xpos)):
+        #Calculate Distance to drone, and the relative deviation
+        dist = np.sqrt((xpos[l])**2 + (ypos[l])**2)
+        sigma = (dist/8) * 0.08 #Increment the deviance by 8cm for every 8 meter
 
-        print(len(x_list))
-        return(x_list, y_list)
+        #Generate Noise
+        x_list.append(xpos[l]+(np.random.normal(mu, sigma))) #Append Noise on x
+        y_list.append(ypos[l]+(np.random.normal(mu, sigma))) #Append Noise on y
+
+    return(x_list, y_list)
 
 
 def algorithm(x_mes, y_mes, t_end, t):
@@ -155,7 +156,7 @@ def animate(xpos, ypos, x_mes, y_mes, algox, algoy, t_end, window):
     fig.set_facecolor('#324e7b')
     axi.set_ylabel('Y-Meters', color='white')
     axi.set_xlabel('X-Meters', color='white')
-    axi.set_title('2 Dimensional Drone Flight', fontsize=20, color='white')
+    #axi.set_title('2 Dimensional Drone Flight', fontsize=20, color='white')
 
     for xtick in axi.get_xticklabels():         
         xtick.set_color('white')     
@@ -184,13 +185,13 @@ def animate(xpos, ypos, x_mes, y_mes, algox, algoy, t_end, window):
         fig.canvas.flush_events() #Run Gui events, loops until processing is finished
     
     #Plot noise with graph
-    axi.plot(x_mes, y_mes, 'r+', label='Noise', linewidth=0.3)
+    axi.plot(x_mes, y_mes, 'r+', label='Noise', linewidth=0.2)
     axi.set_title("Drone movement + Noise")
     fig.canvas.draw()
 
     #Plot Alpha-Beta-Gamma estimate
-    axi.plot(algox, algoy, label='Filter', color='green')
-    axi.set_title("Drone Flight with Noise and Estimated Position")
+    axi.plot(algox, algoy, label='Filter', color='yellow')
+    #axi.set_title("Drone Flight with Noise and Estimated Position")
     fig.canvas.draw()
 
 
@@ -224,8 +225,8 @@ fig_gui = None
 sg.theme("DarkBlue12")
  
 options=[
-        [sg.Frame('Choose your settings', [[sg.Text('Mean (Gaussian Distribution)'), sg.Slider(orientation ='horizontal', key='mean', range=(0,10))],
-                                          [sg.Text('Standard Deviation'), sg.Input('10',key='-SD-', size=(9, 1))]], border_width=3)],
+        [sg.Frame('Choose your settings', [[sg.Text('Mean (Gaussian Distribution)'), sg.Slider(orientation ='horizontal', key='mean', default_value=0, range=(-10,10))],
+                                          [sg.Text('Bird Flocks'), sg.Checkbox(' ')]], border_width=3)],
         [sg.Button('Submit', font=('Times New Roman',12))],
         [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')],
         [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')],
@@ -240,7 +241,7 @@ options=[
 choices = [[sg.Frame('Simulation settings', layout= options, expand_y=True)]]
 
 
-items_chosen = [[sg.Text('Simulering', font=('Times New Roman', 25))],
+items_chosen = [[sg.Text('2 Dimensional Drone Flight', font=('Times New Roman', 25))],
                 [sg.Graph(canvas_size=(600,463),
                             graph_bottom_left=(0,0),
                             graph_top_right=(600,463),
@@ -265,7 +266,7 @@ while True:
             delete_fig(fig_gui)
 
         dronelistx, dronelisty, ax, ay = movement(0, 0, 0, 0, t_end)
-        x_mes, y_mes = noise(dronelistx, dronelisty, int(values['mean']), int(values['-SD-']))
+        x_mes, y_mes = noise(dronelistx, dronelisty, int(values['mean']))
 
 
         algox, algoy = algorithm(x_mes, y_mes, t_end, t)
