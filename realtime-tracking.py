@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('tkagg')
 
 x = []
 predict_x = [ ]

@@ -7,14 +7,21 @@
 import acconeer.exptool as et
 import numpy as np
 
-def main():
-    args = et.a111.ExampleArgumentParser().parse_args()
-    et.utils.config_logging(args)
 
+class Namespace:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+
+def main():
+    
+    #args = et.a111.ExampleArgumentParser().parse_args()
+    #et.utils.config_logging(args)
+    args = Namespace(serial_port='COM3', socket_addr=None, spi=False, sensors=[1], verbose=False, debug=False, quiet=False)
+    #print(args)
     client = et.a111.Client(**et.a111.get_client_args(args))
 
     client.squeeze = False
-
     sensor_config = et.a111.EnvelopeServiceConfig()
     sensor_config.sensor = args.sensors
     sensor_config.range_interval = [0.2, 5.0]
@@ -23,13 +30,13 @@ def main():
     sensor_config.downsampling_factor = 2
 
     session_info = client.setup_session(sensor_config)
-    print("Session info:\n", session_info, "\n")
+    #print("Session info:\n", session_info, "\n")
 
 
     client.start_session()
 
     interrupt_handler = et.utils.ExampleInterruptHandler()
-    print("Press Ctrl-C to end session\n")
+    #print("Press Ctrl-C to end session\n")
 
 
     depths = et.a111.get_range_depths(sensor_config, session_info)
@@ -39,12 +46,12 @@ def main():
         index = np.argmax(data)
         dist = depths[index] #Det er din data Christi <3
         #return dist
-        #print(dist)
+        print(dist)
 
     print("Disconnecting...")
     client.disconnect()
 
 
 
-if __name__ == "__main__":
-    main()
+
+main()
