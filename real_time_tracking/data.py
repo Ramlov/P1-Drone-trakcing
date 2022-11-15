@@ -38,6 +38,7 @@ def main():
         info, data = client.get_next()
         index = np.argmax(data)
         dist = depths[index] #Det er din data Christi <3
+        #return dist
         #print(dist)
 
     print("Disconnecting...")
