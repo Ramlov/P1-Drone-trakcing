@@ -17,7 +17,7 @@ def main():
     
     #args = et.a111.ExampleArgumentParser().parse_args()
     #et.utils.config_logging(args)
-    args = Namespace(serial_port='COM3', socket_addr=None, spi=False, sensors=[1], verbose=False, debug=False, quiet=False)
+    args = Namespace(serial_port='/dev/cu.usbserial-00073', socket_addr=None, spi=False, sensors=[1], verbose=False, debug=False, quiet=False)
     #print(args)
     client = et.a111.Client(**et.a111.get_client_args(args))
 
@@ -45,8 +45,8 @@ def main():
         info, data = client.get_next()
         index = np.argmax(data)
         dist = depths[index] #Det er din data Christi <3
-        #return dist
-        print(dist)
+        print(data)
+        #print(dist)
 
     print("Disconnecting...")
     client.disconnect()
