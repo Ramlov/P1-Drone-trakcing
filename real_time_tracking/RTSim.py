@@ -92,7 +92,7 @@ def main():
     depths = et.a111.get_range_depths(sensor_config, session_info)
     background_data = getbackground(client)
 
-    while True:
+    while not interrupt_handler.got_signal:
         #Data Collection
         info, data = client.get_next() #Get radar info
         starttime = timeit.default_timer()
@@ -109,10 +109,8 @@ def main():
         index = np.argmax(data)        
         dist = depths[index] #Find the corresponding distance with noise reading
 
-        if max1 - min1 > 120:
-            pass
-        else:
-            dist = -1*dist
+        if max1 - min1 < 120:
+            dist = -0.6*dist
         length.append(dist) #Add to Tracking History
         tlist.append(iter) #5hz. Add time point ever data read
 
