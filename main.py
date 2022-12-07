@@ -26,8 +26,8 @@ def animate(xpos, ypos, x_mes, y_mes, algox, algoy, t_end, window):
     fig, axi = plt.subplots()
     axi.set_facecolor('#324e7b')
     fig.set_facecolor('#324e7b')
-    axi.set_ylabel('Y-Meters', color='white')
-    axi.set_xlabel('X-Meters', color='white')
+    axi.set_ylabel('Longitude', color='white')
+    axi.set_xlabel('Latitude', color='white')
     #axi.set_title('2 Dimensional Drone Flight', fontsize=20, color='white')
 
     for xtick in axi.get_xticklabels():         
