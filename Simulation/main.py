@@ -96,7 +96,7 @@ def delete_fig(fig): #Delete or update figure
 fig_gui = None
 
 #Theme
-sg.theme("DarkBlue11")
+sg.theme("DarkBlue12")
  
 options=[
         [sg.Frame('Choose your settings', [[sg.Text('Mean (Gaussian Distribution)'), sg.Slider(orientation ='horizontal', key='mean', default_value=0, range=(-10,10))],
