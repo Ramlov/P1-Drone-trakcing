@@ -50,8 +50,8 @@ def movement(xs, ys, vx, vy, t_end):
                 vy = -8
 
         #Calculate new position for x and y placement
-        xs = xs + vx
-        ys = ys + vy
+        xs = xs + vx + 0.5* ax
+        ys = ys + vy + 0.5* ay
     
         #Append Location
         xpos.append(xs)
