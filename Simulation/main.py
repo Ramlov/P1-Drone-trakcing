@@ -6,6 +6,8 @@ import numpy as np
 import Simulation
 
 matplotlib.use("TkAgg")
+plt.rcParams["figure.figsize"] = [20, 20]
+
 
 t_end = 100
 t = 0.5
@@ -100,8 +102,10 @@ sg.theme("DarkBlue12")
  
 options=[
         [sg.Frame('Choose your settings', [[sg.Text('Mean (Gaussian Distribution)'), sg.Slider(orientation ='horizontal', key='mean', default_value=0, range=(-10,10))],
-                                          [sg.Text('Bird Flocks'), sg.Checkbox(' ')]], border_width=3)],
+                                          ], border_width=3)],
         [sg.Button('Submit', font=('Times New Roman',12))],
+        [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')],
+        [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')],
         [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')],
         [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')],
         [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')], [sg.Text('')],
@@ -116,9 +120,9 @@ choices = [[sg.Frame('Simulation settings', layout= options, expand_y=True)]]
 
 
 items_chosen = [[sg.Text('2 Dimensional Drone Flight', font=('Times New Roman', 25))],
-                [sg.Graph(canvas_size=(600,463),
+                [sg.Graph(canvas_size=(1000,700),
                             graph_bottom_left=(0,0),
-                            graph_top_right=(600,463),
+                            graph_top_right=(1000,700),
                             key = '-graph-')]]
               
 # Create layout with two columns using precreated frames
