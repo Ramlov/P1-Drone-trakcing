@@ -111,7 +111,7 @@ def algorithm(x_mes, y_mes, t_end, t):
     for i in range(1,t_end):
         x_est.append(pre_x + a*(x_mes[i] - pre_x))
         xv_est.append(pre_xv + b*((x_mes[i] - pre_x)/t))
-        xa_est.append(pre_xa + g*((x_mes[i] - pre_x)/0.5*t**2))
+        xa_est.append(pre_xa + g*((x_mes[i] - pre_x)/(0.5*t**2)))
         
         pre_x = x_est[-1] + xv_est[-1]*t + 0.5*xa_est[-1]* t**2
         pre_xv = xv_est[-1] + xa_est[-1]*t 
@@ -119,7 +119,7 @@ def algorithm(x_mes, y_mes, t_end, t):
         
         y_est.append(pre_y + a*(y_mes[i] - pre_y))
         yv_est.append(pre_yv + b*((y_mes[i] - pre_y)/t))
-        ya_est.append(pre_ya + g*((y_mes[i] - pre_y)/0.5*t**2))
+        ya_est.append(pre_ya + g*((y_mes[i] - pre_y)/(0.5*t**2)))
         
         pre_y = y_est[-1] + yv_est[-1] + 0.5*ya_est[-1]
         pre_yv = yv_est[-1] + ya_est[-1] 
