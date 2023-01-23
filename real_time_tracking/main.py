@@ -12,7 +12,6 @@ import acconeer.exptool as et
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-import timeit
 matplotlib.use('tkagg')
 
 class Namespace:
@@ -95,7 +94,6 @@ def main():
     while not interrupt_handler.got_signal:
         #Data Collection
         info, data = client.get_next() #Get radar info
-        starttime = timeit.default_timer()
         #Here we subtract the background noise
         array1 = np.array(data)
         array2 = np.array(background_data)
